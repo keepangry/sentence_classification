@@ -19,6 +19,17 @@ def texts_to_sequences(texts, max_word_num):
 
 
 def mr_load_data(max_word_num=5000):
+    """
+    数据集:
+    MR: Movie reviews with one sentence per re-
+view. Classification involves detecting posi-
+tive/negative reviews (Pang and Lee, 2005).
+
+    sentence-polarity-dataset-v1.0
+
+    :param max_word_num:
+    :return:
+    """
     neg_file = os.path.join(BASE_PATH, 'mr/rt-polarity.neg')
     pos_file = os.path.join(BASE_PATH, 'mr/rt-polarity.pos')
     neg = texts_to_sequences(list(map(str, open(neg_file, 'rb').readlines())), max_word_num)
