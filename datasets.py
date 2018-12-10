@@ -45,7 +45,7 @@ tive/negative reviews (Pang and Lee, 2005).
     neg = texts_to_sequences(list(map(str, open(neg_file, 'rb').readlines())), max_word_num)
     pos = texts_to_sequences(list(map(str, open(pos_file, 'rb').readlines())), max_word_num)
     data = neg+pos
-    labels = [0 for i in range(len(neg))] + [1 for i in range(len(neg))]
+    labels = [0 for i in range(len(neg))] + [1 for i in range(len(pos))]
     return data, labels
 
 
