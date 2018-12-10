@@ -5,6 +5,16 @@ import numpy as np
 BASE_PATH = "/home/yangsen/workspace/sentence_classification/data/"
 
 
+class Dataset(object):
+    def __init__(self, x_train, y_train, x_val=None, y_val=None, x_test=None, y_test=None):
+        self.x_train = x_train
+        self.y_train = y_train
+        self.x_val = x_val
+        self.y_val = y_val
+        self.x_test = x_test
+        self.y_test = y_test
+
+
 def texts_to_sequences(texts, max_word_num):
     """
     文本转整数序列
@@ -37,6 +47,28 @@ tive/negative reviews (Pang and Lee, 2005).
     data = neg+pos
     labels = [0 for i in range(len(neg))] + [1 for i in range(len(neg))]
     return data, labels
+
+
+def k_fold_split(x, y, k=5):
+    assert x.shape[0] == y.shape[0]
+    data_size = x.shape[0]
+    fold_sample_num = data_size // k
+    datasets = []
+    for i in range(k):
+        x_val = x[i * fold_sample_num: (i+1) * fold_sample_num]
+        y_val = y[i * fold_sample_num: (i+1) * fold_sample_num]
+
+        x_train = np.concatenate([
+            x[: i * fold_sample_num],
+            x[(i+1) * fold_sample_num:],
+        ], axis=0)
+
+        y_train = np.concatenate([
+            y[: i * fold_sample_num],
+            y[(i + 1) * fold_sample_num:],
+        ], axis=0)
+        datasets.append(Dataset(x_train=x_train, y_train=y_train, x_val=x_val, y_val=y_val))
+    return datasets
 
 
 if __name__ == "__main__":
