@@ -17,13 +17,21 @@ print('Shape of label tensor:', labels.shape)
 
 # shuffle
 indices = np.arange(data.shape[0])
-np.random.seed(1)
+np.random.seed(2)
 np.random.shuffle(indices)
 data = data[indices]
 labels = labels[indices]
 
 k = 5
 datasets = k_fold_split(x=data, y=labels, k=k)
+
+for i in range(k):
+    dataset = datasets[i]
+    print("fold #%s" % i)
+    print("train pos rate: %.3f" % (dataset.y_train.sum() / dataset.y_train.shape[0],))
+    print("val   pos rate: %.3f" % (dataset.y_val.sum() / dataset.y_val.shape[0],))
+    print()
+
 
 result = []
 for i in range(k):

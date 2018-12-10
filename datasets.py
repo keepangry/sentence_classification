@@ -53,6 +53,7 @@ def k_fold_split(x, y, k=5):
     assert x.shape[0] == y.shape[0]
     data_size = x.shape[0]
     fold_sample_num = data_size // k
+    print(fold_sample_num)
     datasets = []
     for i in range(k):
         x_val = x[i * fold_sample_num: (i+1) * fold_sample_num]
@@ -72,4 +73,9 @@ def k_fold_split(x, y, k=5):
 
 
 if __name__ == "__main__":
-    data, labels = mr_load_data(max_word_num=5000)
+    # data, labels = mr_load_data(max_word_num=5000)
+
+    x = np.array([1, 2, 3, 4, 5])
+    y = np.array([6, 7, 8, 9, 10])
+    datasets = k_fold_split(x, y, k=5)
+    print(datasets[0].x_train)
