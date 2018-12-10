@@ -12,7 +12,9 @@ def base_embed_lstm_net(max_word_num):
     # model.add(layers.Bidirectional(layers.LSTM(64)))
 
     # 0.9817
+    model.add(layers.Bidirectional(layers.LSTM(64, dropout=0.1, recurrent_dropout=0.5, return_sequences=True)))
     model.add(layers.Bidirectional(layers.LSTM(64, dropout=0.1, recurrent_dropout=0.5)))
+    model.add(layers.Dense(16, activation='relu'))
     model.add(layers.Dense(1, activation='sigmoid'))
     return model
 

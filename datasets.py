@@ -2,7 +2,7 @@ import os
 from keras.preprocessing.text import Tokenizer
 import pandas as pd
 import numpy as np
-BASE_PATH = "/home/yangsen/workspace/sentence_classification/data/"
+BASE_PATH = "/home/yangsen/workspace/sentence_classification/"
 
 
 class Dataset(object):
@@ -40,11 +40,11 @@ tive/negative reviews (Pang and Lee, 2005).
     :param max_word_num:
     :return:
     """
-    neg_file = os.path.join(BASE_PATH, 'mr/rt-polarity.neg')
-    pos_file = os.path.join(BASE_PATH, 'mr/rt-polarity.pos')
-    neg = texts_to_sequences(list(map(str, open(neg_file, 'rb').readlines())), max_word_num)
-    pos = texts_to_sequences(list(map(str, open(pos_file, 'rb').readlines())), max_word_num)
-    data = neg+pos
+    neg_file = os.path.join(BASE_PATH, 'small_datasets/mr/rt-polarity.neg')
+    pos_file = os.path.join(BASE_PATH, 'small_datasets/mr/rt-polarity.pos')
+    neg = list(map(str, open(neg_file, 'rb').readlines()))
+    pos = list(map(str, open(pos_file, 'rb').readlines()))
+    data = texts_to_sequences(neg+pos, max_word_num)
     labels = [0 for i in range(len(neg))] + [1 for i in range(len(pos))]
     return data, labels
 

@@ -6,7 +6,7 @@ from models import mr_base_model
 
 # MR base_line
 maxlen = 32
-max_word_num = 5000
+max_word_num = 10000
 data, labels = mr_load_data(max_word_num=max_word_num)
 
 # avg length: 18.28
