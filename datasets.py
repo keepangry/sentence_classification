@@ -28,6 +28,21 @@ def texts_to_sequences(texts, max_word_num):
     return sequences
 
 
+def mr_read_files():
+    """
+
+    :return:
+    """
+    neg_file = os.path.join(BASE_PATH, 'small_datasets/mr/rt-polarity.neg')
+    pos_file = os.path.join(BASE_PATH, 'small_datasets/mr/rt-polarity.pos')
+    neg = list(map(str, open(neg_file, 'rb').readlines()))
+    pos = list(map(str, open(pos_file, 'rb').readlines()))
+    # data = texts_to_sequences(neg+pos, max_word_num)
+    data = neg+pos
+    labels = [0 for i in range(len(neg))] + [1 for i in range(len(pos))]
+    return data, labels
+
+
 def mr_load_data(max_word_num=5000):
     """
     数据集:
@@ -40,12 +55,8 @@ tive/negative reviews (Pang and Lee, 2005).
     :param max_word_num:
     :return:
     """
-    neg_file = os.path.join(BASE_PATH, 'small_datasets/mr/rt-polarity.neg')
-    pos_file = os.path.join(BASE_PATH, 'small_datasets/mr/rt-polarity.pos')
-    neg = list(map(str, open(neg_file, 'rb').readlines()))
-    pos = list(map(str, open(pos_file, 'rb').readlines()))
-    data = texts_to_sequences(neg+pos, max_word_num)
-    labels = [0 for i in range(len(neg))] + [1 for i in range(len(pos))]
+    data, labels = mr_read_files()
+    data = texts_to_sequences(data, max_word_num)
     return data, labels
 
 
