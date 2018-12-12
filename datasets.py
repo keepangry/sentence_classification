@@ -64,7 +64,6 @@ def k_fold_split(x, y, k=5):
     assert x.shape[0] == y.shape[0]
     data_size = x.shape[0]
     fold_sample_num = data_size // k
-    print(fold_sample_num)
     datasets = []
     for i in range(k):
         x_val = x[i * fold_sample_num: (i+1) * fold_sample_num]
