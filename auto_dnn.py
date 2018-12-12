@@ -9,6 +9,7 @@ import keras
 from keras import layers, Input, regularizers
 from keras.models import Sequential, Model
 from util import gene_grid_search_candidates, time_string
+import global_config
 
 
 def random_search_generater():
