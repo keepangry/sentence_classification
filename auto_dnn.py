@@ -15,11 +15,12 @@ import time
 
 def random_search_generater(num=100):
     """
-    神秘bug！！
+
     :param num:
     :return:
     """
     for i in range(num):
+        np.random.seed()
         vocabulary_size = int(np.random.uniform(0.5, 1) * 10000)
         time_steps = int(np.random.uniform(1.8, 3.3) * 10)
         embeding_units = int(np.random.uniform(64, 256))
@@ -31,21 +32,6 @@ def random_search_generater(num=100):
 
         yield Params(vocabulary_size, time_steps, embeding_units, channels, conv1d_filters,
                      dense_units, dense_l2, dense_dropout)
-#
-#
-# def random_search_generater(num=100):
-#     for i in range(num):
-#         vocabulary_size = int(np.random.uniform(0.5, 1) * 10000)
-#         time_steps = int(np.random.uniform(1.8, 3.3) * 10)
-#         embeding_units = int(np.random.uniform(64, 256))
-#         channels = int(np.random.uniform(3, 7))
-#         conv1d_filters = int(np.random.uniform(16, 64))
-#         dense_units = int(np.random.uniform(32, 128))
-#         dense_l2 = np.round(np.random.uniform(0.001, 0.01), 4)
-#         dense_dropout = np.round(np.random.uniform(0.05, 0.3), 4)
-#
-#         yield Params(vocabulary_size, time_steps, embeding_units, channels, conv1d_filters,
-#                      dense_units, dense_l2, dense_dropout)
 
 
 def grid_search_candidates():
