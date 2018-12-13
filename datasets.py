@@ -2,7 +2,9 @@ import os
 from keras.preprocessing.text import Tokenizer
 import pandas as pd
 import numpy as np
-BASE_PATH = "/home/yangsen/workspace/sentence_classification/"
+# BASE_PATH = "/home/yangsen/workspace/sentence_classification/"
+BASE_PATH = os.path.dirname(os.path.abspath(__file__))
+print(BASE_PATH)
 
 
 class Dataset(object):
