@@ -16,7 +16,7 @@ def mr_base_model(dataset, vocabulary_size, maxlen):
     callbacks = [
         keras.callbacks.EarlyStopping(
             monitor='val_loss',
-            patience=3,
+            patience=5,
             mode='auto'
         )
     ]
@@ -25,6 +25,6 @@ def mr_base_model(dataset, vocabulary_size, maxlen):
                         batch_size=128,
                         validation_data=(dataset.x_val, dataset.y_val),
                         callbacks=callbacks,
-                        verbose=2)
-    return model
+                        verbose=0)
+    return model, history
 

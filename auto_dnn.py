@@ -10,10 +10,16 @@ from keras import layers, Input, regularizers
 from keras.models import Sequential, Model
 from util import gene_grid_search_candidates, time_string
 import global_config
+import time
 
 
-def random_search_generater():
-    while True:
+def random_search_generater(num=100):
+    """
+    神秘bug！！
+    :param num:
+    :return:
+    """
+    for i in range(num):
         vocabulary_size = int(np.random.uniform(0.5, 1) * 10000)
         time_steps = int(np.random.uniform(1.8, 3.3) * 10)
         embeding_units = int(np.random.uniform(64, 256))
@@ -23,9 +29,23 @@ def random_search_generater():
         dense_l2 = np.round(np.random.uniform(0.001, 0.01), 4)
         dense_dropout = np.round(np.random.uniform(0.05, 0.3), 4)
 
-        params = Params(*[vocabulary_size, time_steps, embeding_units, channels, conv1d_filters,
-                          dense_units, dense_l2, dense_dropout])
-        yield params
+        yield Params(vocabulary_size, time_steps, embeding_units, channels, conv1d_filters,
+                     dense_units, dense_l2, dense_dropout)
+#
+#
+# def random_search_generater(num=100):
+#     for i in range(num):
+#         vocabulary_size = int(np.random.uniform(0.5, 1) * 10000)
+#         time_steps = int(np.random.uniform(1.8, 3.3) * 10)
+#         embeding_units = int(np.random.uniform(64, 256))
+#         channels = int(np.random.uniform(3, 7))
+#         conv1d_filters = int(np.random.uniform(16, 64))
+#         dense_units = int(np.random.uniform(32, 128))
+#         dense_l2 = np.round(np.random.uniform(0.001, 0.01), 4)
+#         dense_dropout = np.round(np.random.uniform(0.05, 0.3), 4)
+#
+#         yield Params(vocabulary_size, time_steps, embeding_units, channels, conv1d_filters,
+#                      dense_units, dense_l2, dense_dropout)
 
 
 def grid_search_candidates():
@@ -77,11 +97,10 @@ def hyper_parameter_search(max_search_num=100, method="random"):
         accs = []
         for i in range(k):
             dataset = datasets[i]
-            model = hyper_model(dataset=dataset, params=params)
-            y_pred = model.predict(dataset.x_val)
-            acc = score(y_pred, dataset.y_val)
-            accs.append(acc)
-            print("fold #%s, acc:%.4f" % (i, accs[i]))
+            model, history = hyper_model(dataset=dataset, params=params)
+            best_iter = np.argmax(history.history['val_acc'])
+            print("fold #%s, best_iter: %s,  acc:%.4f" % (i, best_iter, history.history['val_acc'][best_iter]))
+            accs.append(history.history['val_acc'][best_iter])
         mean_acc = np.mean(accs)
         print("mean_acc: %s" % mean_acc)
         print("--"*20)
@@ -97,9 +116,7 @@ def hyper_parameter_search(max_search_num=100, method="random"):
         candidates = grid_search_candidates()
         list(map(run, candidates[:max_search_num]))
     elif method == "random":
-        generater = random_search_generater()
-        for i in range(max_search_num):
-            params = next(generater)
+        for params in random_search_generater(max_search_num):
             run(params)
 
 
@@ -155,7 +172,7 @@ def hyper_model(dataset, params):
     callbacks = [
         keras.callbacks.EarlyStopping(
             monitor='val_loss',
-            patience=3,
+            patience=5,
             mode='auto'
         )
     ]
@@ -165,7 +182,7 @@ def hyper_model(dataset, params):
                         validation_data=(dataset.x_val, dataset.y_val),
                         callbacks=callbacks,
                         verbose=0)
-    return model
+    return model, history
 
 
 if __name__ == "__main__":
@@ -173,6 +190,6 @@ if __name__ == "__main__":
     hyper_parameter_search()
 
     # generater = random_search_generater()
-    # for i in range(10):
+    # for i in range(100):
     #     params = next(generater)
     #     print(params)

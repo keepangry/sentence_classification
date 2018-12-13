@@ -76,11 +76,12 @@ def deep_learning_method():
     result = []
     for i in range(k):
         dataset = datasets[i]
-        mr_model = mr_base_model(dataset=dataset, vocabulary_size=vocabulary_size, maxlen=maxlen)
-        y_pred = mr_model.predict(dataset.x_val)
-        acc = score(y_pred, dataset.y_val)
-        result.append(acc)
-        print("fold #%s, acc:%.4f" % (i, result[i]))
+        mr_model, history = mr_base_model(dataset=dataset, vocabulary_size=vocabulary_size, maxlen=maxlen)
+        best_iter = np.argmax(history.history['val_acc'])
+        print("fold #%s, best_iter: %s,  acc:%.4f" % (i, best_iter, history.history['val_acc'][best_iter]))
+        # y_pred = mr_model.predict(dataset.x_val)
+        # acc = score(y_pred, dataset.y_val)
+        result.append(history.history['val_acc'][best_iter])
 
     print(np.mean(result))
 
