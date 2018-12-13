@@ -87,7 +87,7 @@ def hyper_parameter_search(max_search_num=100, method="random"):
         print("--"*20)
         with open(log_file_name, 'a') as fw:
             fw.write(str(params))
-            fw.write("mean_acc: %.4f" % mean_acc)
+            fw.write("\nmean_acc: %.4f" % mean_acc)
             fw.write("%s\n" % time_string())
             fw.write("--"*20 + "\n")
             fw.write("\n")

@@ -10,6 +10,7 @@ from sklearn.model_selection import GridSearchCV
 from sklearn.metrics import scorer
 from sklearn.metrics import fbeta_score, make_scorer
 import lightgbm as lgb
+import global_config
 
 
 def shallow_classify_method():
