@@ -42,7 +42,7 @@ def mr_read_files():
     # data = texts_to_sequences(neg+pos, max_word_num)
     data = neg+pos
     labels = [0 for i in range(len(neg))] + [1 for i in range(len(pos))]
-    return data, labels
+    return np.array(data), np.array(labels)
 
 
 def mr_load_data(max_word_num=5000):

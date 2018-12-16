@@ -2,13 +2,13 @@ from custom_layers import base_embed_lstm_net, base_embed_cnn_lstm_net, base_mul
 import keras
 
 
-def mr_base_model(dataset, vocabulary_size, maxlen):
-    # 0.7749  0.7270  0.7720
-    # model = base_embed_lstm_net(vocabulary_size)
-
-    # model = base_embed_cnn_lstm_net(vocabulary_size)
-
-    model = base_multi_channel_net(vocabulary_size, time_steps=maxlen)
+def mr_base_model(dataset, vocabulary_size, maxlen, method="base_multi_channel_net"):
+    if method == "base_multi_channel_net":
+        model = base_multi_channel_net(vocabulary_size, time_steps=maxlen)
+    elif method == "base_embed_cnn_lstm_net":
+        model = base_embed_cnn_lstm_net(vocabulary_size)
+    else:
+        model = base_embed_lstm_net(vocabulary_size)
 
     model.compile(optimizer='rmsprop',
                   loss='binary_crossentropy',
