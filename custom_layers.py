@@ -1,5 +1,34 @@
 from keras import layers, Input, regularizers
 from keras.models import Sequential, Model
+from attention_lstm import attention_3d_block
+
+
+def base_attention_lstm(vocabulary_size, time_steps=32, type="before"):
+    """
+
+    :param vocabulary_size:
+    :param time_steps:
+    :param type: before/after
+    :return:
+    """
+    INPUT_DIM = 64
+    lstm_units = 32
+
+    text_input = Input(shape=(time_steps, ), dtype='int32', name='text')
+    embedded_text = layers.Embedding(vocabulary_size, INPUT_DIM)(text_input)
+
+    if type == "after":
+        lstm_out = layers.LSTM(lstm_units, return_sequences=True)(embedded_text)
+        attention_mul = attention_3d_block(lstm_out, time_steps=time_steps)
+        attention_mul = layers.Flatten()(attention_mul)
+    else:
+        attention_mul = attention_3d_block(embedded_text)
+        lstm_units = 32
+        attention_mul = layers.LSTM(lstm_units, return_sequences=False)(attention_mul)
+    output = layers.Dense(1, activation='sigmoid')(attention_mul)
+    model = Model(input=[embedded_text], output=output)
+
+    return model
 
 
 def base_embed_lstm_net(vocabulary_size):
@@ -93,6 +122,7 @@ def base_wide_deep_net(vocabulary_size):
 
 
 if __name__ == "__main__":
-    model = base_multi_channel_net(10000)
+    # model = base_multi_channel_net(10000)
+    model = base_attention(10000)
     model.summary()
 
