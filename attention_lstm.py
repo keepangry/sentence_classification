@@ -2,6 +2,7 @@ from keras.layers import merge
 from keras.layers.core import *
 from keras.layers.recurrent import LSTM
 from keras.models import *
+from keras.layers import multiply
 """
 copy from: https://github.com/philipperemy/keras-attention-mechanism
 """
@@ -26,7 +27,7 @@ def attention_3d_block(inputs, time_steps=20):
         a = Lambda(lambda x: K.mean(x, axis=1), name='dim_reduction')(a)
         a = RepeatVector(input_dim)(a)
     a_probs = Permute((2, 1), name='attention_vec')(a)
-    output_attention_mul = merge([inputs, a_probs], name='attention_mul', mode='mul')
+    output_attention_mul = multiply([inputs, a_probs])
     return output_attention_mul
 
 
