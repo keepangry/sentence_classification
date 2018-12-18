@@ -151,8 +151,11 @@ def deep_learning_method():
     result = []
     for i in range(k):
         dataset = datasets[i]
+        print(dataset.x_train.shape)
+        # exit()
         mr_model, history = mr_base_model(dataset=dataset, vocabulary_size=vocabulary_size, maxlen=maxlen,
-                                          method="base_multi_channel_net")
+                                          # method="base_multi_channel_net")
+                                          method="base_attention")
         best_iter = np.argmax(history.history['val_acc'])
         print("fold #%s, best_iter: %s,  acc:%.4f" % (i, best_iter, history.history['val_acc'][best_iter]))
         # y_pred = mr_model.predict(dataset.x_val)
@@ -163,6 +166,6 @@ def deep_learning_method():
 
 
 if __name__ == "__main__":
-    # deep_learning_method()
+    deep_learning_method()
     # wide_deep_method()
-    shallow_classify_method()
+    # shallow_classify_method()
