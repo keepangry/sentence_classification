@@ -1,10 +1,10 @@
 import os
 from keras.preprocessing.text import Tokenizer
 import pandas as pd
+from keras.preprocessing.sequence import pad_sequences
 import numpy as np
 # BASE_PATH = "/home/yangsen/workspace/sentence_classification/"
-BASE_PATH = os.path.dirname(os.path.abspath(__file__))
-print(BASE_PATH)
+from global_config import BASE_PATH
 
 
 class Dataset(object):
@@ -60,6 +60,22 @@ tive/negative reviews (Pang and Lee, 2005).
     data, labels = mr_read_files()
     data = texts_to_sequences(data, max_word_num)
     return data, labels
+
+
+def mr_dataset(vocabulary_size=5000, timesteps=32):
+    data, labels = mr_load_data(vocabulary_size)
+    data = pad_sequences(data, padding="pre", maxlen=timesteps)
+    labels = np.asarray(labels)
+
+    # shuffle
+    indices = np.arange(data.shape[0])
+    np.random.seed(2)
+    np.random.shuffle(indices)
+    data = data[indices]
+    labels = labels[indices]
+    train_size = int(data.shape[0] * 0.8)
+    x_train, x_val, y_train, y_val = data[:train_size], data[train_size:], labels[:train_size], labels[train_size:]
+    return Dataset(x_train=x_train, y_train=y_train, x_val=x_val, y_val=y_val)
 
 
 def k_fold_split(x, y, k=5):
