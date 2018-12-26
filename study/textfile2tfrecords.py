@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 # @Time    : 2018/11/7 12:13 PM
-# @Author  : yangsen07@meituan.com
+# @Author  : 0@keepangry.com
 # @Site    : 
 # @File    : textfile2tfrecords.py
 # @Software: PyCharm
