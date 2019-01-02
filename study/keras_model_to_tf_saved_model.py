@@ -29,7 +29,7 @@ def build_model(vocabulary_size, timesteps):
     :param vocabulary_size:
     :return:
     """
-    text_input = Input(shape=(timesteps, ), dtype='int32', name='text')
+    text_input = Input(shape=(timesteps, ), dtype='int32', name='text_input')
     embedded_text = layers.Embedding(vocabulary_size, 64)(text_input)
 
     # kernel_size = 3
@@ -46,7 +46,7 @@ def build_model(vocabulary_size, timesteps):
     concatenated = layers.LSTM(64)(concatenated)
 
     output = layers.Dense(64, activation='relu')(concatenated)
-    output = layers.Dense(1, activation='sigmoid')(output)
+    output = layers.Dense(1, activation='sigmoid', name="output")(output)
     model = Model(text_input, output)
     return model
 
