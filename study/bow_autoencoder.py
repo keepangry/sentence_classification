@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 # @Time    : 2018/10/30 3:49 PM
-# @Author  : yangsen07@meituan.com
+# @Author  : yangsen
 # @Site    : 
 # @File    : prepare.py
 # @Software: PyCharm
