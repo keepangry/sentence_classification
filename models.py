@@ -6,7 +6,7 @@ def mr_base_model(dataset, vocabulary_size, maxlen, method="base_multi_channel_n
     if method == "base_multi_channel_net":
         model = base_multi_channel_net(vocabulary_size, time_steps=maxlen)
     elif method == "base_attention_lstm":
-        model = base_attention_lstm(vocabulary_size, time_steps=maxlen, type="before")
+        model = base_attention_lstm(vocabulary_size, time_steps=maxlen)
     elif method == "base_embed_cnn_lstm_net":
         model = base_embed_cnn_lstm_net(vocabulary_size)
     else:
@@ -22,6 +22,7 @@ def mr_base_model(dataset, vocabulary_size, maxlen, method="base_multi_channel_n
             mode='auto'
         )
     ]
+    model.summary()
     history = model.fit(dataset.x_train, dataset.y_train,
                         epochs=20,
                         batch_size=128,

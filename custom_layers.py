@@ -1,9 +1,13 @@
 from keras import layers, Input, regularizers
 from keras.models import Sequential, Model
 from attention_lstm import attention_3d_block
+from keras.layers.core import *
+from keras.layers.recurrent import LSTM
+from keras.models import *
+from keras.layers import multiply
 
 
-def base_attention_lstm(vocabulary_size, time_steps=32, type="before"):
+def base_attention_lstm(vocabulary_size, time_steps=32, type="after"):
     """
 
     :param vocabulary_size:
@@ -12,21 +16,23 @@ def base_attention_lstm(vocabulary_size, time_steps=32, type="before"):
     :return:
     """
     INPUT_DIM = 64
-    lstm_units = 32
+    LSTM_UNITS = 32
 
-    text_input = Input(shape=(time_steps, ), dtype='int32', name='text')
-    embedded_text = layers.Embedding(vocabulary_size, INPUT_DIM)(text_input)
+    text_input = Input(shape=(time_steps,), dtype='int32', name='text')     # (batch_size, time_steps)
+    inputs = layers.Embedding(vocabulary_size, INPUT_DIM)(text_input)       # (batch_size, time_steps, input_dim)
 
-    if type == "after":
-        lstm_out = layers.LSTM(lstm_units, return_sequences=True)(embedded_text)
-        attention_mul = attention_3d_block(lstm_out, time_steps=time_steps)
-        attention_mul = layers.Flatten()(attention_mul)
-    else:
-        attention_mul = attention_3d_block(embedded_text)
-        lstm_units = 32
-        attention_mul = layers.LSTM(lstm_units, return_sequences=False)(attention_mul)
-    output = layers.Dense(1, activation='sigmoid')(attention_mul)
-    model = Model(input=[embedded_text], output=output)
+    if type == "before":
+        output_attention_mul = attention_3d_block(inputs, time_steps=time_steps, single_attention_vector=True)
+        attention_mul = LSTM(LSTM_UNITS, return_sequences=False)(output_attention_mul)
+    else:   # after
+        lstm_out = LSTM(LSTM_UNITS, return_sequences=True)(inputs)
+        lstm_out = Reshape((time_steps, LSTM_UNITS))(lstm_out)
+        attention_mul = attention_3d_block(lstm_out, time_steps=time_steps, single_attention_vector=True)
+        attention_mul = Flatten()(attention_mul)
+        attention_mul = Dense(64)(attention_mul)
+
+    output = Dense(1, activation='sigmoid')(attention_mul)
+    model = Model(inputs=text_input, outputs=output)
 
     return model
 
@@ -123,6 +129,6 @@ def base_wide_deep_net(vocabulary_size):
 
 if __name__ == "__main__":
     # model = base_multi_channel_net(10000)
-    model = base_attention(10000)
+    model = base_attention_lstm(10000)
     model.summary()
 

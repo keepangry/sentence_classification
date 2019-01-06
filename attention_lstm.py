@@ -13,21 +13,27 @@ copy from: https://github.com/philipperemy/keras-attention-mechanism
 INPUT_DIM = 2
 TIME_STEPS = 20
 # if True, the attention vector is shared across the input_dimensions where the attention is applied.
-SINGLE_ATTENTION_VECTOR = False
+# SINGLE_ATTENTION_VECTOR = False
 APPLY_ATTENTION_BEFORE_LSTM = False
 
 
-def attention_3d_block(inputs, time_steps=20):
-    # inputs.shape = (batch_size, time_steps, input_dim)
+def attention_3d_block(inputs, time_steps, single_attention_vector=False):
+    """
+
+    :param inputs:
+    :param time_steps:
+    :param single_attention_vector:
+    :return:
+    """
     input_dim = int(inputs.shape[2])
-    a = Permute((2, 1))(inputs)
-    a = Reshape((input_dim, time_steps))(a)   # this line is not useful. It's just to know which dimension is what.
-    a = Dense(time_steps, activation='softmax')(a)
-    if SINGLE_ATTENTION_VECTOR:
+    a = Permute((2, 1))(inputs)                         # (batch_size, input_dim, time_steps)
+    a = Reshape((input_dim, time_steps))(a)             # this line is not useful. It's just to know which dimension is what.
+    a = Dense(time_steps, activation='softmax')(a)      # (batch_size, input_dim, time_steps)  时间序列上全链接层, softmax输出为权重
+    if single_attention_vector:
         a = Lambda(lambda x: K.mean(x, axis=1), name='dim_reduction')(a)
         a = RepeatVector(input_dim)(a)
-    a_probs = Permute((2, 1), name='attention_vec')(a)
-    output_attention_mul = multiply([inputs, a_probs])
+    a_probs = Permute((2, 1), name='attention_vec')(a)  # (batch_size, time_steps, input_dim)  转回原始结构
+    output_attention_mul = multiply([inputs, a_probs])  # (batch_size, time_steps, input_dim)  对应项相乘
     return output_attention_mul
 
 
